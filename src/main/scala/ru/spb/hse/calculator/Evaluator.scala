@@ -11,28 +11,30 @@ class Evaluator extends ExpressionBaseVisitor[Int] {
     case _ => operation(ctx.op.getText)(ctx.left.accept(this), ctx.right.accept(this))
   }
 
-  def operation(op: String): (Int, Int) => Int = op match {
+  private def operation(op: String): (Int, Int) => Int = op match {
     case "+" => _ + _
     case "-" => _ - _
     case "*" => _ * _
     case "/" => _ / _
     case "%" => _ % _
-    case "<" => (x, y) => if (x < y) 1 else 0
-    case ">" => (x, y) => if (x > y) 1 else 0
-    case "<=" => (x, y) => if (x <= y) 1 else 0
-    case ">=" => (x, y) => if (x >= y) 1 else 0
-    case "==" => (x, y) => if (x == y) 1 else 0
-    case "!=" => (x, y) => if (x != y) 1 else 0
-    case "&&" => (x, y) => if (x != 0 && y != 0) 1 else 0
-    case "||" => (x, y) => if (x != 0 || y != 0) 1 else 0
+    case "<" => (x, y) => boolToInt(x < y)
+    case ">" => (x, y) => boolToInt(x > y)
+    case "<=" => (x, y) => boolToInt(x <= y)
+    case ">=" => (x, y) => boolToInt(x >= y)
+    case "==" => (x, y) => boolToInt(x == y)
+    case "!=" => (x, y) => boolToInt(x != y)
+    case "&&" => (x, y) => boolToInt(x != 0 && y != 0)
+    case "||" => (x, y) => boolToInt(x != 0 || y != 0)
   }
 
-  def getType(ctx: ExpressionParser.ExpressionContext): Int = {
+  private def boolToInt(b: Boolean): Int =
+    if (b) 1 else 0
+
+  private def getType(ctx: ExpressionParser.ExpressionContext): Int =
     if (ctx.literal != null)
       0
     else if (ctx.exp != null)
       1
     else
       2
-  }
 }
