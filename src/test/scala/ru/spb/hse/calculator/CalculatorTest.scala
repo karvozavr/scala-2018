@@ -30,7 +30,7 @@ class CalculatorTest {
   def test7(): Unit = testHelper("41 % 3", 2)
 
   @Test
-  def test8(): Unit = testHelper("41 % 3", 2)
+  def test8(): Unit = testHelper("41 / 3", 13)
 
   @Test
   def test9(): Unit = testHelper("1 == 0", 0)
