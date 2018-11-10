@@ -5,11 +5,14 @@ class Evaluator extends ExpressionBaseVisitor[Int] {
   override def visitCalc(ctx: ExpressionParser.CalcContext): Int =
     ctx.expr.accept(this)
 
-  override def visitExpression(ctx: ExpressionParser.ExpressionContext): Int = getType(ctx) match {
-    case 0 => ctx.literal.getText.toInt
-    case 1 => ctx.exp.accept(this)
-    case _ => operation(ctx.op.getText)(ctx.left.accept(this), ctx.right.accept(this))
-  }
+  override def visitExpression(ctx: ExpressionParser.ExpressionContext): Int =
+    if (ctx.literal != null)
+      ctx.literal.getText.toInt
+    else if (ctx.exp != null)
+      ctx.exp.accept(this)
+    else
+      operation(ctx.op.getText)(ctx.left.accept(this), ctx.right.accept(this))
+
 
   private def operation(op: String): (Int, Int) => Int = op match {
     case "+" => _ + _
@@ -29,12 +32,4 @@ class Evaluator extends ExpressionBaseVisitor[Int] {
 
   private def boolToInt(b: Boolean): Int =
     if (b) 1 else 0
-
-  private def getType(ctx: ExpressionParser.ExpressionContext): Int =
-    if (ctx.literal != null)
-      0
-    else if (ctx.exp != null)
-      1
-    else
-      2
 }
