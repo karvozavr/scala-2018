@@ -9,8 +9,8 @@ object Calculator {
 
   def main(args: Array[String]): Unit = {
     println("Arithmetic and logic evaluator:")
-    print(prefix)
-    var input = scala.io.StdIn.readLine()
+    var input = readNextInput
+
     while (input.toLowerCase() != EXIT) {
       try {
         println(eval(input))
@@ -18,8 +18,7 @@ object Calculator {
         case _: Throwable => println("Incorrect expression.")
       }
 
-      print(prefix)
-      input = scala.io.StdIn.readLine()
+      input = readNextInput
     }
   }
 
@@ -27,5 +26,10 @@ object Calculator {
     val lexer = new ExpressionLexer(CharStreams.fromString(expr))
     val parser = new ExpressionParser(new CommonTokenStream(lexer))
     parser.calc().accept(evaluator)
+  }
+
+  private def readNextInput : String = {
+    print(prefix)
+    scala.io.StdIn.readLine()
   }
 }
