@@ -13,7 +13,6 @@ class Evaluator extends ExpressionBaseVisitor[Int] {
     else
       operation(ctx.op.getText)(ctx.left.accept(this), ctx.right.accept(this))
 
-
   private def operation(op: String): (Int, Int) => Int = op match {
     case "+" => _ + _
     case "-" => _ - _
