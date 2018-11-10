@@ -1,6 +1,7 @@
 package ru.spb.hse.calculator
 
 import org.antlr.v4.runtime._
+import ru.spb.hse.calculator.ExpressionParser.CalcContext
 
 object Calculator {
   private val EXIT = "exit"
@@ -22,13 +23,16 @@ object Calculator {
     }
   }
 
-  def eval(expr: String): Int = {
+  private def eval(expr: String): Int =
+    parse(expr).accept(evaluator)
+
+  private def parse(expr: String): CalcContext = {
     val lexer = new ExpressionLexer(CharStreams.fromString(expr))
     val parser = new ExpressionParser(new CommonTokenStream(lexer))
-    parser.calc().accept(evaluator)
+    parser.calc()
   }
 
-  private def readNextInput : String = {
+  private def readNextInput: String = {
     print(prefix)
     scala.io.StdIn.readLine()
   }
