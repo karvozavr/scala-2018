@@ -23,7 +23,7 @@ object Calculator {
     }
   }
 
-  private def eval(expr: String): Int =
+  def eval(expr: String): Int =
     parse(expr).accept(evaluator)
 
   private def parse(expr: String): CalcContext = {
