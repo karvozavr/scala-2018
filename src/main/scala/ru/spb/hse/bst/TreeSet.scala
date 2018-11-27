@@ -10,7 +10,6 @@ class TreeSet[T] private(private var tree: AVLTree[T] = Leaf)(implicit val order
 
   def contains(elem: T): Boolean = AVLTree.contains(elem, tree)(ordering)
 
-
   def apply(elem: T): Boolean = contains(elem)
 
   def add(elem: T): TreeSet[T] = this + elem
@@ -34,7 +33,6 @@ class TreeSet[T] private(private var tree: AVLTree[T] = Leaf)(implicit val order
   def |(other: TreeSet[T]): TreeSet[T] = this ++ other
 
   def ^(other: TreeSet[T]): TreeSet[T] = (this | other) -- (this & other)
-
 
   private def +=(elem: T): Boolean = {
     if (!contains(elem)) {
