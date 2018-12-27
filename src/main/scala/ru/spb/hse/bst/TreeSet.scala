@@ -112,7 +112,7 @@ class TreeSet[T] private(private var tree: AVLTree[T] = Leaf)(implicit val order
 
   def withFilter(p: T => Boolean): WithFilter = new WithFilter(p)
 
-  class WithFilter(p: T => Boolean) {
+  class WithFilter(private val p: T => Boolean) {
     def map[U](f: T => U)(implicit ordering: Ordering[U]): TreeSet[U] = {
       val result = TreeSet[U]()
       for (x <- TreeSet.this)
