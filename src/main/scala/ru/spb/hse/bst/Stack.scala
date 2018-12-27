@@ -3,7 +3,7 @@ package ru.spb.hse.bst
 sealed abstract class MyList[+T] {
   def isEmpty: Boolean
 
-  def isNotEmpty: Boolean = !isEmpty
+  def nonEmpty: Boolean = !isEmpty
 
   def tail: MyList[T]
 
@@ -20,10 +20,6 @@ case object MyNil extends MyList[Nothing] {
   override def head = throw new NoSuchElementException()
 }
 
-case class MyListNode[T](private val _head: T, private val _tail: MyList[T]) extends MyList[T] {
+case class MyListNode[T](head: T, tail: MyList[T]) extends MyList[T] {
   override def isEmpty: Boolean = false
-
-  override def tail: MyList[T] = _tail
-
-  override def head: T = _head
 }

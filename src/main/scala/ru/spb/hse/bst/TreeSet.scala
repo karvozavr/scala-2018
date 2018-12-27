@@ -52,17 +52,18 @@ class TreeSet[T] private(private var tree: AVLTree[T] = Leaf)(implicit val order
     false
   }
 
+  def copy(): TreeSet[T] =
+    new TreeSet[T](AVLTree.copy(tree))
+
   def ++[U <: T](that: TreeSet[U]): TreeSet[T] = {
-    val result = TreeSet[T]()
-    for (x <- this)
-      result += x
+    val result = copy()
     for (y <- that)
       result += y
     result
   }
 
   def --[U <: T](that: TreeSet[U]): TreeSet[T] = {
-    val result = new TreeSet[T](AVLTree.copy(tree))
+    val result = copy()
     for (x <- that)
       result -= x
     result
@@ -112,11 +113,28 @@ class TreeSet[T] private(private var tree: AVLTree[T] = Leaf)(implicit val order
   def withFilter(p: T => Boolean): WithFilter = new WithFilter(p)
 
   class WithFilter(p: T => Boolean) {
-    def map[U](f: T => U)(implicit ordering: Ordering[U]): TreeSet[U] = TreeSet.this filter p map f
+    def map[U](f: T => U)(implicit ordering: Ordering[U]): TreeSet[U] = {
+      val result = TreeSet[U]()
+      for (x <- TreeSet.this)
+        if (p(x))
+          result += f(x)
+      result
+    }
 
-    def flatMap[U](f: T => TreeSet[U])(implicit ordering: Ordering[U]): TreeSet[U] = TreeSet.this filter p flatMap f
+    def flatMap[U](f: T => TreeSet[U])(implicit ordering: Ordering[U]): TreeSet[U] = {
+      val result = TreeSet[U]()
+      for (x <- TreeSet.this)
+        if (p(x))
+          for (y <- f(x))
+            result += y
+      result
+    }
 
-    def foreach[U](f: T => U): Unit = TreeSet.this filter p foreach f
+    def foreach[U](f: T => U): Unit = {
+      for (x <- TreeSet.this)
+        if (p(x))
+          f(x)
+    }
 
     def withFilter(q: T => Boolean): WithFilter = new WithFilter(x => p(x) && q(x))
   }
@@ -150,7 +168,7 @@ class TreeSet[T] private(private var tree: AVLTree[T] = Leaf)(implicit val order
       value
     }
 
-    override def hasNext: Boolean = descendStack.isNotEmpty
+    override def hasNext: Boolean = descendStack.nonEmpty
   }
 
 }
@@ -158,7 +176,7 @@ class TreeSet[T] private(private var tree: AVLTree[T] = Leaf)(implicit val order
 object TreeSet {
   def apply[T]()(implicit ordering: Ordering[T]): TreeSet[T] = new TreeSet[T](Leaf)
 
-  def of[T](elems: T*)(implicit ordering: Ordering[T]): TreeSet[T] = {
+  def apply[T](elems: T*)(implicit ordering: Ordering[T]): TreeSet[T] = {
     var set = new TreeSet[T]()
     elems.foreach(elem => set += elem)
     set
